@@ -29,11 +29,11 @@ public class LoginServlet extends HttpServlet {
             Optional<User> opt = userDAO.findByUsername(username);
             if (opt.isPresent()) {
                 User u = opt.get();
-                if (BCrypt.checkpw(password, u.getPassword())) {
+                if (BCrypt.checkpw(password, u.getPasswordHash())) {
                     HttpSession s = req.getSession(true);
                     s.setAttribute("userId", u.getId());
                     s.setAttribute("username", u.getUsername());
-                    resp.sendRedirect("feed.jsp");
+                    resp.sendRedirect("feed");
                     return;
                 }
             }

@@ -1,52 +1,92 @@
-<%@ page import="java.util.*,com.example.minifb.dao.PostDAO,com.example.minifb.dao.CommentDAO,com.example.minifb.dao.UserDAO,com.example.minifb.model.Post,com.example.minifb.model.Comment,com.example.minifb.model.User" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
     Integer userId = (Integer) session.getAttribute("userId");
     String username = (String) session.getAttribute("username");
     if (userId == null) { response.sendRedirect("login.jsp"); return; }
-
-    PostDAO postDAO = new PostDAO();
-    CommentDAO commentDAO = new CommentDAO();
-    UserDAO userDAO = new UserDAO();
-
-    List<Post> posts = Collections.emptyList();
-    try { posts = postDAO.findAll(); } catch (Exception e) { e.printStackTrace(); }
 %>
+<!DOCTYPE html>
 <html>
-<head><title>Feed</title></head>
+<head>
+    <title>Feed - Mini FB</title>
+    <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
 <body>
-<p>Welcome, <b><%= username %></b>! <a href="createPost.jsp">Create Post</a> | <a href="logout">Logout</a></p>
-<hr/>
-<% for (Post p : posts) { 
-     User postUser = null;
-     try { postUser = userDAO.findById(p.getUserId()).orElse(null); } catch (Exception e) { e.printStackTrace(); }
-%>
-  <div style="border:1px solid #ccc;padding:10px;margin:10px;">
-    <div>
-      <b><%= (postUser != null ? postUser.getUsername() : ("User#" + p.getUserId())) %></b>
-      <small style="color:gray"> - <%= p.getCreatedAt() %></small>
+<div class="header">
+    <img src="assets/images/fb-logo.png" class="logo" alt="logo"/>
+    <div class="search">Mini FB</div>
+    <div class="right">
+        <span>Welcome, <b><%= username %></b></span>
+        <a class="nav-link" href="createPost.jsp">Create Post</a>
+        <a class="nav-link" href="logout">Logout</a>
     </div>
-    <p><%= (p.getCaption() != null ? p.getCaption() : "") %></p>
-    <% if (p.getImageUrl() != null && !p.getImageUrl().trim().isEmpty()) { %>
-        <div><img src="<%= p.getImageUrl() %>" style="max-width:600px;max-height:500px;"/></div>
-    <% } %>
+</div>
 
-    <h4>Comments</h4>
-    <%
-       List<Comment> comments = Collections.emptyList();
-       try { comments = commentDAO.findByPostId(p.getId()); } catch (Exception e) { e.printStackTrace(); }
-       for (Comment c : comments) {
-           User commentUser = null;
-           try { commentUser = userDAO.findById(c.getUserId()).orElse(null); } catch (Exception e) { e.printStackTrace(); }
-    %>
-       <p><b><%= (commentUser != null ? commentUser.getUsername() : ("User#" + c.getUserId())) %>:</b> <%= c.getContent() %></p>
-    <% } %>
+<div class="page">
+    <div class="left-column">
+        <div class="card">
+            <h3>Your Profile</h3>
+            <p><b><%= username %></b></p>
+        </div>
+    </div>
 
-    <form action="comment" method="post">
-        <input type="hidden" name="postId" value="<%= p.getId() %>"/>
-        <input type="text" name="content" placeholder="Write a comment..." required/>
-        <button type="submit">Comment</button>
-    </form>
-  </div>
-<% } %>
+    <div class="feed-column">
+        <div class="card new-post">
+            <form action="post" method="post" enctype="multipart/form-data">
+                <textarea name="caption" placeholder="What's on your mind?" rows="3"></textarea>
+                <div class="row">
+                    <input type="file" name="image" accept="image/*"/>
+                    <button type="submit">Post</button>
+                </div>
+            </form>
+        </div>
+
+        <c:forEach var="p" items="${posts}">
+            <div class="card post">
+                <div class="post-header">
+                    <div class="avatar"></div>
+                    <div>
+                        <b>
+                            <c:out value="${p.userId}"/>
+                        </b>
+                        <div class="time"><c:out value="${p.createdAt}"/></div>
+                    </div>
+                </div>
+
+                <div class="post-body">
+                    <p><c:out value="${p.caption}"/></p>
+                    <c:if test="${not empty p.imageKey}">
+                        <img src="${p.imageKey}" alt="Post image" class="post-image"/>
+                    </c:if>
+                </div>
+
+                <div class="post-comments">
+                    <h4>Comments</h4>
+                    <c:forEach var="c" items="${p.comments}">
+                        <div class="comment">
+                            <b> User#<c:out value='${c.userId}'/>:</b> <c:out value="${c.content}"/>
+                        </div>
+                    </c:forEach>
+                </div>
+
+                <div class="add-comment">
+                    <form action="comment" method="post">
+                        <input type="hidden" name="postId" value="${p.id}"/>
+                        <input type="text" name="content" placeholder="Write a comment..." required/>
+                        <button type="submit">Comment</button>
+                    </form>
+                </div>
+            </div>
+        </c:forEach>
+    </div>
+
+    <div class="right-column">
+        <div class="card">
+            <h3>Suggestions</h3>
+            <p>People you may know</p>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

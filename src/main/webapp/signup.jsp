@@ -1,18 +1,24 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
 <html>
-<head><title>Signup</title></head>
+<head>
+    <title>Sign Up - Mini FB</title>
+    <link rel="stylesheet" href="assets/css/style.css"/>
+</head>
 <body>
-<h2>Signup</h2>
-<c:choose>
-  <c:when test="${param.error == '1'}"><p style="color:red">Invalid input. Password must be >= 6 chars.</p></c:when>
-  <c:when test="${param.error == '2'}"><p style="color:red">Error creating user (maybe username exists).</p></c:when>
-</c:choose>
-<form action="signup" method="post">
-  Username:<br/><input type="text" name="username" required/><br/>
-  Email:<br/><input type="email" name="email"/><br/>
-  Password:<br/><input type="password" name="password" minlength="6" required/><br/><br/>
-  <button type="submit">Sign Up</button>
-</form>
-<p>Already have account? <a href="login.jsp">Login</a></p>
+<div class="header">
+    <img src="assets/images/fb-logo.png" class="logo" alt="logo"/>
+    <h1>Mini FB - Sign Up</h1>
+</div>
+<div class="container">
+    <form action="signup" method="post" class="card">
+        <h2>Create account</h2>
+        <input type="text" name="username" placeholder="Username" required/>
+        <input type="email" name="email" placeholder="Email (optional)"/>
+        <input type="password" name="password" placeholder="Password (min 6 chars)" required/>
+        <button type="submit">Sign Up</button>
+        <p>Already have account? <a href="login.jsp">Login</a></p>
+    </form>
+</div>
 </body>
 </html>

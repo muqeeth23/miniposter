@@ -7,7 +7,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet("/comment")
 public class CommentServlet extends HttpServlet {
@@ -21,12 +20,13 @@ public class CommentServlet extends HttpServlet {
         int postId = Integer.parseInt(req.getParameter("postId"));
         String content = req.getParameter("content");
 
-        Comment c = new Comment(postId, userId, content);
-        try {
-            commentDAO.save(c);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        resp.sendRedirect("feed.jsp");
+        Comment c = new Comment();
+        c.setPostId(postId);
+        c.setUserId(userId);
+        c.setContent(content);
+
+        try { commentDAO.save(c); } catch (Exception e) { e.printStackTrace(); }
+
+        resp.sendRedirect("feed");
     }
 }

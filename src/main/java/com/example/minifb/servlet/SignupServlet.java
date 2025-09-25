@@ -12,26 +12,27 @@ import java.sql.SQLException;
 
 @WebServlet("/signup")
 public class SignupServlet extends HttpServlet {
+
     private final UserDAO userDAO = new UserDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/signup.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
-        if (username == null || password == null || username.trim().isEmpty() || password.length() < 6) {
+        if (username == null || password == null || password.length() < 6) {
             resp.sendRedirect("signup.jsp?error=1");
             return;
         }
 
         String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));
-        User u = new User(username.trim(), email == null ? "" : email.trim(), hashed);
+        User u = new User(username, email == null ? "" : email, hashed);
         try {
             userDAO.save(u);
             resp.sendRedirect("login.jsp?signup=1");

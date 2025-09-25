@@ -4,7 +4,6 @@
            http://maven.apache.org/POM/4.0.0
            http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>com.example</groupId>
   <artifactId>mini-fb</artifactId>
   <version>1.0</version>
@@ -16,7 +15,7 @@
   </properties>
 
   <dependencies>
-    <!-- Servlet API (provided by Tomcat) -->
+    <!-- Servlet / JSP (provided by Tomcat) -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -31,25 +30,37 @@
       <version>1.2</version>
     </dependency>
 
-    <!-- MySQL connector -->
+    <!-- MySQL -->
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.33</version>
     </dependency>
 
-    <!-- AWS SDK v2 - S3 -->
+    <!-- AWS SDK v2 (S3) -->
     <dependency>
       <groupId>software.amazon.awssdk</groupId>
       <artifactId>s3</artifactId>
       <version>2.20.50</version>
     </dependency>
 
-    <!-- jBCrypt for password hashing -->
+    <!-- BCrypt for password hashing -->
     <dependency>
       <groupId>org.mindrot</groupId>
       <artifactId>jbcrypt</artifactId>
       <version>0.4</version>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.36</version>
     </dependency>
   </dependencies>
 
@@ -59,9 +70,6 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.10.1</version>
-        <configuration>
-          <release>11</release>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
